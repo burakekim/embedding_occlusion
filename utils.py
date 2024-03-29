@@ -4,13 +4,60 @@ import os
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import pytorch_lightning as pl
 import torch
 from skimage import exposure
 from torch.utils.data import DataLoader
 
 from ni_dataset import NaturalnessDataset
 from pl_trainer import NaturalnessTrainer
+
+import matplotlib.gridspec as gridspec
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+
+
+WC_palette = {
+    10: (0, 160, 0),  # "Tree cover" 00a000
+    20: (150, 100, 0),  # "Shrubland" 966400
+    30: (255, 180, 0),  # "Grassland" ffb400
+    40: (255, 255, 100),  # "Cropland" ffff64
+    50: (195, 20, 0),  # "Built-up" c31400
+    60: (255, 245, 215),  # "Bare / sparse vegetation" fff5d7
+    70: (255, 255, 255),  # "Snow and ice" ffffff
+    80: (0, 70, 200),  # "Permanent water bodies" 0046c8
+    90: (0, 220, 130),  # "Herbaceous wetland" 00dc82
+    95: (0, 150, 120),  # "Mangroves" 009678
+    100: (255, 235, 175),
+}  # "Moss and lichen" ffebaf
+
+cmappx = [
+    "#00a000",
+    "#966400",
+    "#ffb400",
+    "#ffff64",
+    "c31400",
+    "#fff5d7",
+    "#ffffff",
+    "#0046c8",
+    "#00dc82",
+    "#009678",
+    "#ffebaf",
+]
+
+rgb = [
+    (0, 160, 0),
+    (150, 100, 0),
+    (255, 180, 0),
+    (255, 255, 100),
+    (195, 20, 0),
+    (255, 245, 215),
+    (255, 255, 255),
+    (0, 70, 200),
+    (0, 220, 130),
+    (0, 150, 120),
+    (255, 235, 175),
+]
+
 
 modality_lookup = {
     "s2": 10,
@@ -169,50 +216,6 @@ def get_channels(im, all_channels, select_channels):
 
     return im[chns]
 
-
-WC_palette = {
-    10: (0, 160, 0),  # "Tree cover" 00a000
-    20: (150, 100, 0),  # "Shrubland" 966400
-    30: (255, 180, 0),  # "Grassland" ffb400
-    40: (255, 255, 100),  # "Cropland" ffff64
-    50: (195, 20, 0),  # "Built-up" c31400
-    60: (255, 245, 215),  # "Bare / sparse vegetation" fff5d7
-    70: (255, 255, 255),  # "Snow and ice" ffffff
-    80: (0, 70, 200),  # "Permanent water bodies" 0046c8
-    90: (0, 220, 130),  # "Herbaceous wetland" 00dc82
-    95: (0, 150, 120),  # "Mangroves" 009678
-    100: (255, 235, 175),
-}  # "Moss and lichen" ffebaf
-
-cmappx = [
-    "#00a000",
-    "#966400",
-    "#ffb400",
-    "#ffff64",
-    "c31400",
-    "#fff5d7",
-    "#ffffff",
-    "#0046c8",
-    "#00dc82",
-    "#009678",
-    "#ffebaf",
-]
-
-rgb = [
-    (0, 160, 0),
-    (150, 100, 0),
-    (255, 180, 0),
-    (255, 255, 100),
-    (195, 20, 0),
-    (255, 245, 215),
-    (255, 255, 255),
-    (0, 70, 200),
-    (0, 220, 130),
-    (0, 150, 120),
-    (255, 235, 175),
-]
-
-
 def convert_to_color_wc(arr_2d, palette=WC_palette):
     """Numeric labels to RGB-color encoding."""
     arr_3d = np.zeros((arr_2d.shape[0], arr_2d.shape[1], 3), dtype=np.uint8)
@@ -229,12 +232,6 @@ cmap_colors = ["#d7191c", "#fdae61", "#ffffc0", "#a6d96a", "#1a9641"]
 ni_cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
     name="ni_map", colors=cmap_colors
 )
-
-import matplotlib.gridspec as gridspec
-import numpy as np
-import torch
-from matplotlib import pyplot as plt
-from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 def integer_decode(normalized_array):
@@ -263,7 +260,7 @@ def get_data_viz(test_dataset, model, idx):
         "VIIRS",
     )
     image_mask = test_dataset[idx]
-    wdpa_id = image_mask[-1]
+    # wdpa_id = image_mask[-1]
     input = torch.Tensor(np.expand_dims(image_mask[0]["image"], 0)).to(device)
 
     logits_reg = model(input)
@@ -332,12 +329,12 @@ def viz_bar_images(idx, bar_vals, data, exp_id=None):
 
     # Plot data
     ax1 = plt.subplot(gs[0, 1])
-    im1 = ax1.imshow(data["s2"])
+    ax1.imshow(data["s2"])
     ax1.axis("off")
     ax1.set_title("Sentinel-2")
 
     ax2 = plt.subplot(gs[0, 2])
-    im2 = ax2.imshow(data["esa"])
+    ax2.imshow(data["esa"])
     ax2.axis("off")
     ax2.set_title("Land Cover")
 
@@ -347,7 +344,7 @@ def viz_bar_images(idx, bar_vals, data, exp_id=None):
     ax3.set_title("Land Naturalness Annotation")
 
     ax4 = plt.subplot(gs[1, 1])
-    im4 = ax4.imshow(data["s1"].squeeze())
+    ax4.imshow(data["s1"].squeeze())
     ax4.axis("off")
     ax4.set_title("Sentinel-1")
 
@@ -392,12 +389,12 @@ def viz_images(idx, data, exp_id=None):
 
     # Plot data
     ax1 = plt.subplot(gs[0, 1])
-    im1 = ax1.imshow(data["s2"])
+    ax1.imshow(data["s2"])
     ax1.axis("off")
     ax1.set_title("Sentinel-2")
 
     ax2 = plt.subplot(gs[0, 2])
-    im2 = ax2.imshow(data["esa"])
+    ax2.imshow(data["esa"])
     ax2.axis("off")
     ax2.set_title("Land Cover")
 
@@ -407,7 +404,7 @@ def viz_images(idx, data, exp_id=None):
     ax3.set_title("Land Naturalness Annotation")
 
     ax4 = plt.subplot(gs[1, 1])
-    im4 = ax4.imshow(data["s1"].squeeze())
+    ax4.imshow(data["s1"].squeeze())
     ax4.axis("off")
     ax4.set_title("Sentinel-1")
 
