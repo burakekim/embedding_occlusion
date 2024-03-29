@@ -1,0 +1,29 @@
+FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN pip install --upgrade pip
+RUN apt update && apt install -y black tmux htop isort
+
+RUN apt-get update &&\
+    apt-get -y install software-properties-common
+RUN apt-get update &&\
+    add-apt-repository ppa:ubuntugis/ppa
+RUN apt-get update &&\
+    apt-get install -y binutils libproj-dev gdal-bin libgdal-dev
+RUN export CPLUS_INCLUDE_PATH=/usr/include/gdal &&\
+    export C_INCLUDE_PATH=/usr/include/gdal
+RUN pip install setuptools==57.5.0
+RUN pip install GDAL==$(gdal-config --version | awk -F'[.]' '{print $1"."$2"."$3}')
+
+RUN pip install sentinelhub[AWS]
+RUN pip install rasterio
+RUN pip install kornia
+RUN pip install jupyter ipykernel notebook jupyterlab
+RUN pip install scipy scikit-learn
+RUN pip install matplotlib==2.2.4
+
+RUN pip install torchgeo
+RUN pip install torchvision tensorboard
+RUN pip install pytorch-lightning
+
+WORKDIR /ws
