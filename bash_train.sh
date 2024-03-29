@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash   
 # chmod +x bash_train.sh
 # TODO add pip install torchgeo to DOCKERFILE, black, isort, tmux ...
 
