@@ -2,18 +2,16 @@ import json
 import os
 
 import matplotlib
+import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from skimage import exposure
 from torch.utils.data import DataLoader
 
 from ni_dataset import NaturalnessDataset
 from pl_trainer import NaturalnessTrainer
-
-import matplotlib.gridspec as gridspec
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-
 
 WC_palette = {
     10: (0, 160, 0),  # "Tree cover" 00a000
@@ -202,7 +200,8 @@ def stretch(im):
 
 def get_channels(im, all_channels, select_channels):
     """
-    Filters the channels for a given set of channels. Used to extract RGB channels from full-spectral S2 image.
+    Filters the channels for a given set of channels.
+    Used to extract RGB channels from full-spectral S2 image.
     """
 
     all_ch = all_channels
@@ -214,6 +213,7 @@ def get_channels(im, all_channels, select_channels):
     ]
 
     return im[chns]
+
 
 def convert_to_color_wc(arr_2d, palette=WC_palette):
     """Numeric labels to RGB-color encoding."""
@@ -307,8 +307,6 @@ def viz_bar_images(idx, bar_vals, data, exp_id=None):
     if len(bar_vals) == 5:
         categories = ("Sentinel-2", "Sentinel-1", "Land Cover", "Night Lights", "ALL")
 
-    fig = plt.figure(figsize=(16, 8))
-
     # Create a GridSpec layout
     gs = gridspec.GridSpec(2, 4, width_ratios=[1, 1, 1, 1])
 
@@ -380,8 +378,6 @@ def viz_bar_images(idx, bar_vals, data, exp_id=None):
 
 
 def viz_images(idx, data, exp_id=None):
-
-    fig = plt.figure(figsize=(16, 8))
 
     # Create a GridSpec layout
     gs = gridspec.GridSpec(2, 4, width_ratios=[1, 1, 1, 1])

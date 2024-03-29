@@ -268,24 +268,9 @@ class NaturalnessTrainer(pl.LightningModule):
         else:
             return optimizer
 
-    # def configure_optimizers(self):
-    #     optimizer = torch.optim.Adam(
-    #         self.parameters(), lr=self.learning_rate, weight_decay=self.weight_decay
-    #     )
-    #     if self.use_lr_scheduler:
-    #         lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(
-    #             optimizer=optimizer, T_0=3, T_mult=1
-    #         )
-    #         return {
-    #             "optimizer": optimizer,
-    #             "lr_scheduler": {"scheduler": lr_scheduler, "interval": "epoch"},
-    #         }
-    #     else:
-    #         return optimizer
-
     def _generate_occluded_input(self, x, modality_indices):
         """
-        Occludes the channels for a given modality with different strategies and logs a sanity check.
+        Occludes the channels for a given modality with different strategies.
         """
         # Clone the input to avoid modifying the original tensor
         occluded_x = x.clone()
