@@ -53,7 +53,6 @@ class NaturalnessDataset(torch.utils.data.Dataset):
     def __getitem__(self, index):
         filename = self.ids[index]
         season = "s2_temporal_subset"
-        full_filename = os.path.join(self.root, str(season), f"{filename}.tif")
 
         patch_size = self.crop_size
 
