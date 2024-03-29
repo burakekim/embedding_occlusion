@@ -1,4 +1,4 @@
-# Project Title
+# Enabling Embedding-level Input Feature Attribution with Occlusion
 
 This is the code for the paper "Deep Occlusion Framework for Multimodal Earth
 Observation Data", which is currently under revision.
