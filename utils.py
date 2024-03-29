@@ -15,7 +15,6 @@ import matplotlib.gridspec as gridspec
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
-
 WC_palette = {
     10: (0, 160, 0),  # "Tree cover" 00a000
     20: (150, 100, 0),  # "Shrubland" 966400
