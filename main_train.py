@@ -15,7 +15,6 @@ from ni_dataset import NaturalnessDataset
 from pl_trainer import NaturalnessTrainer
 from utils import modality_lookup
 
-
 def main(args):
     args_dict = vars(args)
     args_json_path = os.path.join("logs", args.exp_name, "args.json")
